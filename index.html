@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html class="light" dir="rtl" lang="ar">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>رحلة قطرة الماء</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#137fec",
+              secondary: "#fbbf24",
+              success: "#34d399",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "surface-light": "#ffffff",
+              "surface-dark": "#1e293b",
+            },
+            fontFamily: {
+              display: ["Noto Sans Arabic", "Lexend", "sans-serif"],
+              body: ["Noto Sans Arabic", "Lexend", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "1rem",
+              lg: "1.5rem",
+              xl: "2rem",
+              "2xl": "3rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Noto Sans Arabic", "Lexend", sans-serif;
+        background-color: #f6f7f8;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      @keyframes pulse-soft {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+      }
+      .animate-breathe {
+        animation: pulse-soft 3s infinite ease-in-out;
+      }
+
+      /* Enhanced Simulation Animations */
+      @keyframes sway {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+      }
+      .animate-sway {
+        animation: sway 3s ease-in-out infinite;
+        transform-origin: bottom center;
+      }
+
+      @keyframes rain {
+        0% { transform: translateY(-100%); opacity: 0; }
+        50% { opacity: 1; }
+        100% { transform: translateY(300%); opacity: 0; }
+      }
+      .rain-drop {
+        position: absolute;
+        width: 2px;
+        height: 15px;
+        background: rgba(19, 127, 236, 0.6);
+        animation: rain 1s linear infinite;
+      }
+
+      @keyframes vapor {
+        0% { transform: translateY(0) scale(0.5); opacity: 0; }
+        20% { opacity: 0.6; }
+        80% { opacity: 0.2; }
+        100% { transform: translateY(-120px) scale(2); opacity: 0; }
+      }
+      .vapor-particle {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.6);
+        animation: vapor 3s ease-in forwards;
+      }
+
+      @keyframes ripple {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(2.5); opacity: 0; }
+      }
+      .ripple {
+        position: absolute;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        animation: ripple 2s infinite;
+      }
+
+      .cloud-unit {
+        transition: all 1s ease-in-out;
+      }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
