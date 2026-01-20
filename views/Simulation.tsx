@@ -106,6 +106,20 @@ const Simulation: React.FC = () => {
     ));
   };
 
+  // مصفوفة ثابتة لتوزيع السحب بشكل متناسق في المشهد
+  const cloudPositions = [
+    { x: 5, y: 10, baseSize: 70 },
+    { x: 25, y: 5, baseSize: 90 },
+    { x: 45, y: 15, baseSize: 80 },
+    { x: 65, y: 8, baseSize: 100 },
+    { x: 85, y: 12, baseSize: 75 },
+    { x: 15, y: 25, baseSize: 85 },
+    { x: 35, y: 20, baseSize: 95 },
+    { x: 55, y: 30, baseSize: 70 },
+    { x: 75, y: 25, baseSize: 80 },
+    { x: 90, y: 35, baseSize: 65 },
+  ];
+
   return (
     <div className="flex flex-col w-full h-full pb-10 bg-slate-50 dark:bg-slate-950">
       {/* نافذة المحاكاة الرئيسية */}
@@ -144,14 +158,8 @@ const Simulation: React.FC = () => {
                 <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
                   <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255,255,255,0.8)" />
                 </marker>
-                <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="transparent" />
-                  <stop offset="50%" stopColor="white" />
-                  <stop offset="100%" stopColor="transparent" />
-                </linearGradient>
               </defs>
               
-              {/* سهم التبخر (من البحر للغيوم) */}
               <path 
                 d="M 280,240 Q 300,180 250,80" 
                 fill="none" 
@@ -162,7 +170,6 @@ const Simulation: React.FC = () => {
                 markerEnd="url(#arrowhead)"
               />
               
-              {/* سهم التكاثف (عبر السماء) */}
               <path 
                 d="M 230,60 Q 150,40 80,70" 
                 fill="none" 
@@ -173,7 +180,6 @@ const Simulation: React.FC = () => {
                 markerEnd="url(#arrowhead)"
               />
               
-              {/* سهم الهطول (من السماء للأرض) */}
               <path 
                 d="M 70,100 Q 50,200 100,260" 
                 fill="none" 
@@ -186,23 +192,39 @@ const Simulation: React.FC = () => {
             </svg>
           )}
 
-          {/* الغيوم */}
-          <div className="absolute top-0 left-0 right-0 h-32 flex justify-around items-start p-4 pointer-events-none z-30">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <span 
-                key={i}
-                className="material-symbols-outlined cloud-unit transition-all duration-1000"
-                style={{ 
-                  fontSize: `${80 + (i % 3) * 20}px`,
-                  opacity: cloudDensity > (i * 15) ? 0.95 : 0.05,
-                  transform: `translateY(${cloudDensity > (i * 15) ? '0px' : '-40px'}) scale(${cloudDensity > (i * 15) ? 1 : 0.6})`,
-                  color: cloudDensity > 75 ? '#475569' : cloudDensity > 40 ? '#cbd5e1' : '#f8fafc',
-                  fontVariationSettings: "'FILL' 1"
-                }}
-              >
-                cloud
-              </span>
-            ))}
+          {/* نظام الغيوم الديناميكي المطور */}
+          <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden">
+            {cloudPositions.map((pos, i) => {
+              // العتبة التي يظهر عندها هذا الجزء من الغيمة
+              const threshold = i * 7; 
+              const isVisible = cloudDensity > threshold;
+              
+              // الحجم يكبر كلما زادت الكثافة بعد العتبة
+              const growthFactor = isVisible ? (cloudDensity - threshold) / 50 : 0;
+              const scale = isVisible ? (0.8 + growthFactor) : 0.5;
+              
+              // اللون يصبح أغمق (سحب ركامية) مع الكثافة العالية
+              const color = cloudDensity > 75 ? '#475569' : cloudDensity > 40 ? '#cbd5e1' : '#f8fafc';
+              
+              return (
+                <span 
+                  key={i}
+                  className="material-symbols-outlined cloud-unit absolute transition-all duration-1000 ease-out"
+                  style={{ 
+                    left: `${pos.x}%`,
+                    top: `${pos.y}%`,
+                    fontSize: `${pos.baseSize}px`,
+                    opacity: isVisible ? 0.9 : 0,
+                    transform: `scale(${scale}) translateY(${isVisible ? '0px' : '-40px'}) rotate(${(i % 2 === 0 ? 1 : -1) * (cloudDensity / 20)}deg)`,
+                    color: color,
+                    fontVariationSettings: "'FILL' 1",
+                    filter: `drop-shadow(0 ${4 + (cloudDensity / 20)}px ${10 + (cloudDensity / 10)}px rgba(0,0,0,${isVisible ? 0.15 : 0}))`
+                  }}
+                >
+                  cloud
+                </span>
+              );
+            })}
           </div>
 
           {/* البخار */}
@@ -242,7 +264,6 @@ const Simulation: React.FC = () => {
               <span className="text-[9px] font-black">الهطول</span>
             </button>
 
-            {/* زر الدورة الكاملة المضاف */}
             <button 
               onClick={(e) => { e.stopPropagation(); startFullCycle(); }}
               className={`pointer-events-auto flex-1 max-w-[100px] backdrop-blur-md py-2.5 rounded-xl shadow-2xl flex flex-col items-center gap-1 hover:scale-110 active:scale-95 transition-all border-2 ${isAutoPlaying ? 'bg-emerald-500 text-white border-emerald-200 animate-pulse' : 'bg-white/95 dark:bg-slate-800/95 text-emerald-600 dark:text-emerald-400 border-emerald-100 shadow-emerald-500/20'}`}
